@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Eye, EyeOff } from "react-feather";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext"; // Import the custom hook
 
 const Login = () => {
+  const { setToken } = useAuth(); // Get the setToken function from the context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +22,7 @@ const Login = () => {
         email,
         password,
       });
-      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token); // Use the context's setToken method
       navigate("/dashboard");
     } catch (err: any) {
       setError("Invalid credentials"); // Show error inside the button
