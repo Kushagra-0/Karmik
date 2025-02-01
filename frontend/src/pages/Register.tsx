@@ -7,10 +7,15 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true); // Start loader
+    setError(null); // Clear previous errors
+
     try {
       const response = await axios.post("http://localhost:5000/api/auth/register", {
         email,
@@ -18,9 +23,9 @@ const Register = () => {
       });
       console.log(response.data.msg);
       navigate("/login");
-    } catch (err) {
-      console.error(err);
-      console.log("Error registering user");
+    } catch (err: any) {
+      setError("Error registering user. Please try again."); // Show error if registration fails
+      setIsLoading(false); // Stop loader
     }
   };
 
@@ -28,6 +33,9 @@ const Register = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-orange-600">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">
         <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Create an Account</h2>
+
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>} {/* Error message */}
+
         <form onSubmit={handleRegister}>
           <div className="mb-4">
             <label className="block text-gray-600">Email</label>
@@ -39,6 +47,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+
           <div className="mb-4 relative">
             <label className="block text-gray-600">Password</label>
             <input
@@ -56,12 +65,29 @@ const Register = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-          <button type="submit" className="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700">
-            Register
+
+          <button
+            type="submit"
+            className={`w-full py-2 rounded-lg ${
+              isLoading ? "bg-gray-400" : "bg-orange-600 hover:bg-orange-700"
+            } text-white`}
+            disabled={isLoading} // Disable button while loading
+          >
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <div className="spinner-border animate-spin w-5 h-5 border-4 border-white rounded-full border-t-transparent" />
+              </div>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
+
         <p className="text-center text-gray-600 mt-4">
-          Already have an account? <Link to="/login" className="text-orange-600 hover:underline">Login</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-orange-600 hover:underline">
+            Login
+          </Link>
         </p>
       </div>
     </div>
