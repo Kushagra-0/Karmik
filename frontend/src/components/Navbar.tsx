@@ -9,7 +9,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-md py-4 z-50">
       <div className="container mx-auto flex items-center justify-between px-6">
         {/* Logo */}
-        <h1 className="text-2xl font-bold text-orange-600">Karmik</h1>
+        <h1 className="text-2xl font-bold text-orange-600"><Link to="/">Karmik</Link></h1>
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex space-x-6">
