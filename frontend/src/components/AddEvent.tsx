@@ -1,14 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const AddEvent = () => {
-  const userId = localStorage.getItem("userId");
-
-  // Ensure userId is valid
-  if (!userId || userId.length !== 24) {
-    // You can show an error message or handle the case when userId is invalid
-    console.error("Invalid or missing userId");
-  }
+  const { userId } = useAuth();
 
   const [eventDetails, setEventDetails] = useState({
     title: "",
@@ -20,7 +15,7 @@ const AddEvent = () => {
     pickupInstructions: "",
     eventType: "",
     terms: false,
-    userId: userId || "", // Using userId from localStorage or an empty string
+    userId: userId
   });
 
   const handleChange = (e: any) => {
@@ -34,16 +29,10 @@ const AddEvent = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (!userId) {
-      // Handle error case, e.g., show message or block form submission
-      console.error("Invalid userId");
-      return;
-    }
-
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/events/create", // Assuming your backend is running locally
-        eventDetails
+        "http://localhost:5000/api/events/create",
+        eventDetails,
       );
 
       console.log("Event created successfully:", response.data);
@@ -57,7 +46,7 @@ const AddEvent = () => {
         pickupInstructions: "",
         eventType: "",
         terms: false,
-        userId: userId || "",
+        userId: userId
       });
     } catch (error) {
       console.error("Error creating event:", error);
