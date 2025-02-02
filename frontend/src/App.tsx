@@ -4,8 +4,11 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import Dashboard from "./pages/protected/Dashboard"
-import Events from "./pages/protected/Events"
 import AddEvents from "./pages/protected/AddEvents"
+import UserEvents from "./pages/protected/UserEvents"
+import AllEvents from "./pages/protected/AllEvents"
+import Event from "./pages/protected/Event"
+import Chats from "./pages/protected/Chats"
 
 const App = () => {
   return (
@@ -15,8 +18,11 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/dashboard' element={<ProtectedRoute element={<Dashboard />} />} />
-        <Route path='/events' element={<ProtectedRoute element={<Events />}/>} />
+        <Route path='/events' element={<ProtectedRoute element={<AllEvents />}/>} />
         <Route path='/add-events' element={<ProtectedRoute element={<AddEvents />}/>} />
+        <Route path='/events/event/:eventId' element={<ProtectedRoute element={<Event />} />} />
+        <Route path='/my-events' element={<ProtectedRoute element={<UserEvents />} />} />
+        <Route path='/chats' element={<ProtectedRoute element={<Chats />} />} />
       </Routes>
     </Router> 
   )

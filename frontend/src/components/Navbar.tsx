@@ -38,6 +38,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/my-events" className="text-gray-700 hover:text-orange-600">
+                  My Events
+                </Link>
+              </li>
+              <li>
                 <button onClick={handleLogout} className="text-gray-700 hover:text-orange-600">
                   Logout
                 </button>
@@ -70,17 +75,34 @@ const Navbar = () => {
         <div className="md:hidden bg-white shadow-lg py-4">
           <ul className="flex flex-col items-center space-y-4">
             {token ? (
-              <li>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    closeMenu(); // Close the menu after logout
-                  }}
-                  className="text-gray-700 hover:text-orange-600"
-                >
-                  Logout
-                </button>
-              </li>
+              <>
+                <li>
+                  <Link to="/add-events" className="text-gray-700 hover:text-orange-600" onClick={closeMenu}>
+                    Add Events
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/events" className="text-gray-700 hover:text-orange-600" onClick={closeMenu}>
+                    Events
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/my-events" className="text-gray-700 hover:text-orange-600" onClick={closeMenu}>
+                    My Events
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      closeMenu(); // Close the menu after logout
+                    }}
+                    className="text-gray-700 hover:text-orange-600"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
             ) : (
               <>
                 <li>

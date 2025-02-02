@@ -10,7 +10,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  events: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event'
+  }]
 });
 
 // Hash password before saving to the database
@@ -23,6 +27,13 @@ userSchema.pre('save', async function(next) {
 // Compare entered password with stored password
 userSchema.methods.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+userSchema.methods.addEvent = async function(eventId) {
+  if (!this.events.includes(eventId)) {
+    this.events.push(eventId);
+    await this.save();
+  }
 };
 
 module.exports = mongoose.model('User', userSchema);

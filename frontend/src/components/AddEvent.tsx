@@ -54,7 +54,7 @@ const AddEvent = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
       <h2 className="text-center text-2xl font-bold mb-6">Create Event</h2>
       <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <form onSubmit={handleSubmit} className="space-y-6">
