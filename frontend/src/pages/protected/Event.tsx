@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { Calendar, MapPin, Clock, Home } from "react-feather"; 
@@ -11,7 +11,7 @@ const Event = () => {
   const [event, setEvent] = useState<any>(null); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Navigation hook
+  const navigate = useNavigate();
 
   const { userId } = useAuth();
   const loggedInUser = userId;
@@ -30,16 +30,35 @@ const Event = () => {
     fetchEvent();
   }, [eventId]);
 
-  if (loading) return <div>Loading event...</div>;
-  if (error) return <div>{error}</div>;
-
-  const handleChat = () => {
+  const handleChat = async () => {
     if (!loggedInUser) {
-      alert("You must be logged in to chat.");
+      alert("Please log in to start a chat.");
+      navigate('/login');
       return;
     }
-    navigate(`/chats?receiverId=${event.userId}&senderId=${loggedInUser}`);
+
+    if (loggedInUser === event.userId) {
+      alert("You cannot start a chat with yourself.");
+      return;
+    }
+
+    try {
+      // Create or get existing chat
+      const response = await axios.post('http://localhost:5000/api/chats/create', {
+        senderId: loggedInUser,
+        receiverId: event.userId
+      });
+
+      // Navigate to chat page with the chat parameters
+      navigate(`/chats?senderId=${loggedInUser}&receiverId=${event.userId}`);
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      alert('Failed to start chat. Please try again.');
+    }
   };
+
+  if (loading) return <div>Loading event...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div>

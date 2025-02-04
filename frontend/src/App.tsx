@@ -8,7 +8,7 @@ import AddEvents from "./pages/protected/AddEvents"
 import UserEvents from "./pages/protected/UserEvents"
 import AllEvents from "./pages/protected/AllEvents"
 import Event from "./pages/protected/Event"
-import Chats from "./pages/protected/Chats"
+import Chat from "./pages/protected/Chat"
 
 const App = () => {
   return (
@@ -22,7 +22,7 @@ const App = () => {
         <Route path='/add-events' element={<ProtectedRoute element={<AddEvents />}/>} />
         <Route path='/events/event/:eventId' element={<ProtectedRoute element={<Event />} />} />
         <Route path='/my-events' element={<ProtectedRoute element={<UserEvents />} />} />
-        <Route path='/chats' element={<ProtectedRoute element={<Chats />} />} />
+        <Route path='/chat' element={<ProtectedRoute element={<Chat />} />} />
       </Routes>
     </Router> 
   )

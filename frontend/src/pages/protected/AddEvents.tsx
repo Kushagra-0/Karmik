@@ -5,7 +5,9 @@ const AddEvents = () => {
   return (
     <div>
         <Navbar />
-        <AddEvent />
+        <div className="bg-gray-50">
+          <AddEvent />
+        </div>
     </div>
   )
 }

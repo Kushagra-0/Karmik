@@ -83,7 +83,7 @@ const MyEvents = () => {
                           {event.time}
                         </p>
                       </div>
-                      <p className="text-gray-600 flex items-center mt-4 bg-orange-200 w-24 p-0.5 rounded-full text-sm">
+                      <p className="text-gray-600 inline-flex items-center mt-4 bg-orange-200 p-0.5 rounded-full text-sm whitespace-nowrap pr-2">
                         <AlertCircle className="mr-1 ml-1 w-4" />
                         {formatDistanceToNow(parseISO(event.date), { addSuffix: true })}
                       </p>

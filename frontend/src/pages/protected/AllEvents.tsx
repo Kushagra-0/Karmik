@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
 import { Event } from "../../interface/Event";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
-import { Calendar, MapPin, Clock, AlertCircle, Home } from "react-feather"; // React Feather icons
+import { Calendar, MapPin, Clock, AlertCircle, Home, Filter } from "react-feather"; // React Feather icons
 
 const AllEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -53,7 +53,10 @@ const AllEvents = () => {
       <div className="flex justify-center items-start min-h-screen p-8 w-2/3 mt-16 ml-40">
         {/* Left Side - Search & Filter */}
         <div className="w-1/3 p-6 border shadow-md sticky top-20 bg-white rounded-lg"> {/* Added sticky positioning */}
-          <h2 className="text-xl font-bold mb-4">Filter Events</h2>
+          <div className="flex flex-row justify-center">
+            <Filter className="w-5 mr-1"/>
+            <h2 className="text-base font-medium mb-4">Filters</h2>
+          </div>  
 
           {/* Search Input */}
           <input
@@ -113,9 +116,9 @@ const AllEvents = () => {
                         {event.time}
                       </p>
                     </div>
-                    <p className="text-gray-600 flex items-center mt-4 bg-orange-200 w-20 p-0.5 rounded-full text-sm">
-                      <AlertCircle className="mr-1 ml-1 w-4" />   
-                      {formatDistanceToNow(parseISO(event.date))}
+                    <p className="text-gray-600 inline-flex items-center mt-4 bg-orange-200 p-0.5 rounded-full text-sm whitespace-nowrap pr-2">
+                      <AlertCircle className="mr-1 ml-1 w-4" />
+                      {formatDistanceToNow(parseISO(event.date), { addSuffix: true })}
                     </p>
                   </li>
                 </Link>
