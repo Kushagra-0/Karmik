@@ -43,14 +43,18 @@ const AllEvents = () => {
     setFilteredEvents(filtered);
   }, [searchTerm, locationFilter, events]);
 
-  if (loading) return <div>Loading events...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div>
       <Navbar />
       <div className="bg-gray-50">
-      <div className="flex justify-center items-start min-h-screen p-8 w-2/3 mt-16 ml-40">
+      {loading ? (
+        <div className="min-h-screen flex justify-center items-center">
+          <div className="spinner-border animate-spin w-5 h-5 border-4 border-gray-700 rounded-full border-t-transparent" />
+        </div>
+      ) : (
+        <div className="flex justify-center items-start min-h-screen p-8 w-2/3 mt-16 ml-56">
         {/* Left Side - Search & Filter */}
         <div className="w-1/3 p-6 border shadow-md sticky top-20 bg-white rounded-lg"> {/* Added sticky positioning */}
           <div className="flex flex-row justify-center">
@@ -127,7 +131,9 @@ const AllEvents = () => {
           )}
         </div>
       </div>
-      </div>
+      
+    )}
+    </div>
     </div>
   );
 };

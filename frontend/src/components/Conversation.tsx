@@ -9,16 +9,17 @@ const Conversation = ({conversation} : any) => {
     useEffect(() => {
         const friendId = conversation.members.find((m:any) => m !== userId);
         setUser(friendId);
-    })
+    }, [conversation, userId]);
+
+    console.log(conversation);  
 
     return (
-        <>
-            <div className={`cursor-pointer border`}>
-                <div className="hover:border-l-4 pl-2 py-4 hover:border-orange-600">
-                    {user}
-                </div>
+        <div className={`cursor-pointer border`}>
+            <div className="hover:border-l-4 pl-2 py-4 hover:border-orange-600">
+                ola
+                {user}
             </div>
-        </>
+        </div>
     )
 }
 

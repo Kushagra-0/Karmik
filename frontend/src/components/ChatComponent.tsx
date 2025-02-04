@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Conversation from "./Conversation";
 import Message from "./Message";
+import io from "socket.io-client";
 
 interface Message {
   sender: string,
@@ -11,14 +12,55 @@ interface Message {
   conversationId: string
 }
 
+
 const ChatComponent: React.FC = () => {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const socket = useRef<any>()
 
   const { userId } = useAuth();
+
+  useEffect(() => {
+    socket.current = io("http://localhost:5000");
+    socket.current.on("connect", () => {
+      console.log("Socket connected:", socket.current.id);
+      if (userId) {
+        console.log('Emitting addUser after connection with userId:', userId);
+        socket.current.emit("addUser", userId);
+      }
+    });
+    socket.current.on("getMessage", (data:any) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: new Date().toISOString()
+      })
+    })
+
+    return () => {
+      socket.current.disconnect();
+    };
+  }, [])
+
+  useEffect(() => {
+    if (arrivalMessage && currentChat) {
+      if (currentChat.members.includes(arrivalMessage.sender)) {
+        setMessages((prev) => [...prev, arrivalMessage]);
+      }
+    }
+  }, [arrivalMessage, currentChat])
+
+  useEffect(() => {
+    console.log('Emitting addUser with userId:', userId);
+    socket.current.emit("addUser", userId)
+    socket.current.on("getUsers", (users:any) => {
+      console.log(users)
+    })
+  }, [userId])
 
   useEffect(() => {
     const getConversations = async() => {
@@ -30,7 +72,7 @@ const ChatComponent: React.FC = () => {
       }
     }
 
-    getConversations();
+    if (userId) getConversations();
   }, [userId])
 
   useEffect(() => {
@@ -61,17 +103,34 @@ const ChatComponent: React.FC = () => {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     const message = {
-      sender: userId,
-      text: newMessage, 
-      conversationId: currentChat._id
+        sender: userId,
+        text: newMessage, 
+        conversationId: currentChat._id
+    };
+
+    const receiverId = currentChat.members.find((member:any) => member !== userId);
+    console.log('Sending message to receiverId:', receiverId);
+
+    if (receiverId) {
+        console.log('Emitting sendMessage event:', {
+            senderId: userId,
+            receiverId,
+            text: newMessage,
+        });
+        
+        socket.current.emit("sendMessage", {
+            senderId: userId,
+            receiverId,
+            text: newMessage,
+        });
     }
 
-    try{
-      const res = await axios.post("http://localhost:5000/api/message/", message);
-      setMessages((prevMessages) => [...prevMessages, res.data]); // Correct way
-      setNewMessage("");
+    try {
+        const res = await axios.post("http://localhost:5000/api/message/", message);
+        setMessages((prevMessages) => [...prevMessages, res.data]);
+        setNewMessage("");
     } catch(err) {
-      console.log(err); 
+        console.log(err); 
     }
   }
 
@@ -88,7 +147,7 @@ const ChatComponent: React.FC = () => {
         </h2>
         <div>
           {conversations.map((c: any) => (
-            <div onClick={() => setCurrentChat(c)}>
+            <div key={c._id} onClick={() => setCurrentChat(c)}>
               <Conversation conversation={c} />
             </div>
           ))}

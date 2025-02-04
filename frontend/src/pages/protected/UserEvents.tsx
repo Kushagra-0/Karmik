@@ -55,16 +55,20 @@ const MyEvents = () => {
     <>
       <Navbar /> {/* Include Navbar */}
       <div className="bg-gray-50">
-      <div className="flex justify-center min-h-screen p-8 w-full mt-16">
+      <div className="flex justify-center min-h-screen p-8 w-full">
         <div className="w-1/3">
           {loading ? (
-            <p className="text-center text-gray-700 text-lg">Loading events...</p>
+            <div className="min-h-screen flex justify-center items-center">
+              <div className="spinner-border animate-spin w-5 h-5 border-4 border-gray-700 rounded-full border-t-transparent" />
+            </div>
           ) : events.length === 0 ? (
-            <p className="text-center text-gray-500 text-lg">You have no events.</p>
+            <div className="min-h-screen flex justify-center items-center text-gray-700">
+              No Events 
+            </div>
           ) : (
-            <ul className="flex gap-6 flex-col bg-white">
+            <ul className="flex gap-6 flex-col mt-16">
               {events.map((event) => (
-                <div key={event._id} className="relative">
+                <div key={event._id} className="relative bg-white">
                   <Link to={`http://localhost:5173/events/event/${event._id}`}>
                     <li className="p-4 border rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer">
                       <h3 className="text-xl flex items-center">{event.title}</h3>

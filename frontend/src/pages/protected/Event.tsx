@@ -14,7 +14,6 @@ const Event = () => {
   const navigate = useNavigate();
 
   const { userId } = useAuth();
-  const loggedInUser = userId;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -30,41 +29,35 @@ const Event = () => {
     fetchEvent();
   }, [eventId]);
 
-  const handleChat = async () => {
-    if (!loggedInUser) {
-      alert("Please log in to start a chat.");
-      navigate('/login');
-      return;
-    }
-
-    if (loggedInUser === event.userId) {
-      alert("You cannot start a chat with yourself.");
-      return;
-    }
-
+  const handleContact = async() => {
     try {
-      // Create or get existing chat
-      const response = await axios.post('http://localhost:5000/api/chats/create', {
-        senderId: loggedInUser,
-        receiverId: event.userId
+      const response = await axios.post("http://localhost:5000/api/conversation", {
+        senderId: userId,
+        receiverId: event.userId,  // Assuming event.ownerId holds the event creator's ID
       });
-
-      // Navigate to chat page with the chat parameters
-      navigate(`/chats?senderId=${loggedInUser}&receiverId=${event.userId}`);
+  
+      if (response.status === 200) {
+        navigate(`/chat`); // Redirect to chat page with conversation ID
+      }
     } catch (error) {
-      console.error('Error creating chat:', error);
-      alert('Failed to start chat. Please try again.');
+      console.error("Error creating conversation:", error);
+      alert("Failed to create conversation. Please try again.");
     }
-  };
+  }
 
-  if (loading) return <div>Loading event...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div>
       <Navbar />
       <div className="bg-gray-50 min-h-screen">
-        <div className="pt-24 font-semibold text-4xl flex justify-center">{event.title} event</div>
+        {loading ? (
+          <div className="min-h-screen flex justify-center items-center">
+            <div className="spinner-border animate-spin w-5 h-5 border-4 border-gray-700 rounded-full border-t-transparent" />
+          </div>
+        ) : (
+          <>
+          <div className="pt-24 font-semibold text-4xl flex justify-center">{event.title} event</div>
         <div className="p-8 w-1/2 mx-auto bg-white rounded-lg shadow-lg mt-8">
           <div className="flex w-full justify-between">
             <h2 className="text-2xl flex items-center font-semibold">{event.title}</h2>
@@ -104,21 +97,23 @@ const Event = () => {
           </div>
           
           <hr className="mt-10"/>
-          <div className="items-center space-x-2 mt-10">
+          <div className="items-center mt-10">
             <div className="text-lg font-semibold">Additional Information</div>
-            <span className="font-normal text-gray-700">{event.pickupInstructions || "N/A"}</span>
+            <div className="font-normal text-gray-700 mt-4">{event.pickupInstructions || "N/A"}</div>
           </div>
           <hr className="mt-10"/>
           
           <div className="mt-8 flex justify-center">
             <button
-              onClick={handleChat}
+              onClick={handleContact}
               className="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-center hover:bg-orange-700"
             >
               Contact Now
             </button>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
