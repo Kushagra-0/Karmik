@@ -91,7 +91,7 @@ const AllEvents = () => {
           setSearchTerm(mobileSearchTerm)
           setIsMobileFilterOpen(false)
         }}
-        className="w-full bg-blue-500 text-white p-2 rounded"
+        className="w-full bg-orange-200 text-black p-2 rounded"
       >
         Apply Filters
       </button>
@@ -123,7 +123,7 @@ const AllEvents = () => {
             <div className="spinner-border animate-spin w-5 h-5 border-4 border-gray-700 rounded-full border-t-transparent" />
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row justify-center items-start min-h-screen p-4 md:p-8 md:w-2/3 mt-16 md:ml-56">
+          <div className="flex flex-col md:flex-row justify-center items-start min-h-screen p-4 md:p-8 md:w-2/3 mt-16 md:ml-20 lg:ml-36 xl:ml-56">
             {/* Desktop Filter Sidebar - Hidden on mobile */}
             <div className="hidden md:block w-1/3 p-6 border shadow-md sticky top-20 bg-white rounded-lg">
               <div className="flex flex-row justify-center">
@@ -156,7 +156,7 @@ const AllEvents = () => {
             </div>
 
             {/* Event List */}
-            <div className="w-full md:w-2/3 md:ml-10">
+            <div className="w-full lg:w-2/3 md:ml-10">
               {filteredEvents.length === 0 ? (
                 <p className="text-center">No events found.</p>
               ) : (

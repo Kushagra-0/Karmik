@@ -23,7 +23,7 @@ const MyEvents = () => {
         }
 
         const response = await axios.get<Event[]>(`http://localhost:5000/api/events/user/${userId}`);
-        setEvents(response.data);
+        setEvents(response.data.reverse());
       } catch (error) {
         console.error("Error fetching user events:", error);
       } finally {
@@ -55,8 +55,8 @@ const MyEvents = () => {
     <>
       <Navbar /> {/* Include Navbar */}
       <div className="bg-gray-50">
-      <div className="flex justify-center min-h-screen p-8 w-full">
-        <div className="w-1/3">
+      <div className="flex justify-center min-h-screen p-4 md:p-8 w-full">
+        <div className="w-full md:w-2/3 lg:w-1/3">
           {loading ? (
             <div className="min-h-screen flex justify-center items-center">
               <div className="spinner-border animate-spin w-5 h-5 border-4 border-gray-700 rounded-full border-t-transparent" />
@@ -66,7 +66,7 @@ const MyEvents = () => {
               No Events 
             </div>
           ) : (
-            <ul className="flex gap-6 flex-col mt-16">
+            <ul className="flex gap-4 md:gap-6 flex-col mt-16">
               {events.map((event) => (
                 <div key={event._id} className="relative bg-white">
                   <Link to={`http://localhost:5173/events/event/${event._id}`}>

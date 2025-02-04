@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send } from "react-feather";
+import { Send, Menu, ArrowLeft } from "react-feather";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Conversation from "./Conversation";
@@ -12,13 +12,13 @@ interface Message {
   conversationId: string
 }
 
-
 const ChatComponent: React.FC = () => {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState<any>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const socket = useRef<any>()
 
@@ -90,16 +90,6 @@ const ChatComponent: React.FC = () => {
     getMessages();
   }, [currentChat])
 
-
-  // const handleSendMessage = () => {
-  //   if (inputMessage.trim() === "" || !selectedChat) return;
-  //   setMessages({
-  //     ...messages,
-  //     [selectedChat.id]: [...(messages[selectedChat.id] || []), { text: inputMessage, sender: "You" }],
-  //   });
-  //   setInputMessage("");
-  // };
-
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     const message = {
@@ -138,34 +128,83 @@ const ChatComponent: React.FC = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const handleBackToConversations = () => {
+    setCurrentChat(null);
+    setIsSidebarOpen(true);
+  }
+
+  const handleSelectConversation = (conversation: any) => {
+    setCurrentChat(conversation);
+    setIsSidebarOpen(false);
+  }
+
   return (
-    <div className="flex mt-28 mb-20 bg-gray-100 w-3/4">
-      {/* Chat Menu */}
-      <div className="w-1/4 bg-white shadow-md">
+    <div className="flex flex-col md:flex-row mt-4 md:mt-28 mb-4 md:mb-20 bg-gray-100 w-full md:w-3/4 mx-auto">
+      {/* Mobile Menu Toggle */}
+      <div className="md:hidden flex items-center p-4 bg-white shadow-md">
+        <button 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+          className="mr-4"
+        >
+          <Menu />
+        </button>
+        {currentChat && (
+          <div className="font-bold text-gray-700">
+            {currentChat.members.find((m:any) => m !== userId)}
+          </div>
+        )}
+      </div>
+
+      {/* Chat Menu - Mobile Sidebar */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-full bg-white shadow-md transform transition-transform duration-300 ease-in-out
+        md:static md:block  md:w-1/4
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        {/* <button 
+          className="md:hidden absolute top-4 right-4 z-60"
+          onClick={() => setIsSidebarOpen(false)}
+        >
+          <ArrowLeft />
+        </button> */}
+
         <h2 className="text-white inline-flex justify-center bg-orange-600 px-4 py-1.5 rounded-full text-sm whitespace-nowrap m-4">
            All Messages
         </h2>
         <div>
           {conversations.map((c: any) => (
-            <div key={c._id} onClick={() => setCurrentChat(c)}>
+            <div key={c._id} onClick={() => handleSelectConversation(c)}>
               <Conversation conversation={c} />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Chatbox */}
-      <div className="flex-1 flex flex-col bg-white shadow-md">
+      {/* Chatbox - Mobile & Desktop */}
+      <div className={`
+        flex-1 flex flex-col bg-white shadow-md
+        ${currentChat ? 'block' : 'hidden md:block'}
+      `}>
         {currentChat ? (
           <>
-            <div className="p-4 border-b font-bold text-gray-700">{currentChat.members.find((m:any) => m !== userId)}</div>
+            <div className="hidden md:block p-4 border-b font-bold text-gray-700">
+              {currentChat.members.find((m:any) => m !== userId)}
+            </div>
+
+            {/* Mobile Back Button */}
+            <div className="md:hidden p-4 border-b flex items-center">
+              <button onClick={handleBackToConversations} className="mr-4">
+                <ArrowLeft />
+              </button>
+              <div className="font-bold text-gray-700">
+                {currentChat.members.find((m:any) => m !== userId)}
+              </div>
+            </div>
 
             {/* Messages Container */}
             <div className="flex-1 p-4 space-y-2 overflow-y-auto max-h-[58vh]">
-              {messages.map((m:any) => (
-                <>
-                  <Message message={m} own={m.sender === userId} />
-                </>
+              {messages.map((m:any, index:number) => (
+                <Message key={index} message={m} own={m.sender === userId} />
               ))}
               <div ref={chatEndRef} />
             </div>
@@ -184,16 +223,26 @@ const ChatComponent: React.FC = () => {
                   newMessage.trim() ? "bg-orange-600 text-white" : "bg-gray-400 text-gray-200 cursor-not-allowed"
                 }`}
                 onClick={handleSubmit}
-                disabled={!newMessage.trim()} // Disable when input is empty
+                disabled={!newMessage.trim()}
               >
                 <Send />
               </button>
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center flex-1 text-gray-500">Select a chat to start messaging</div>
+          <div className="hidden md:flex items-center justify-center flex-1 text-gray-500">
+            Select a chat to start messaging
+          </div>
         )}
       </div>
+
+      {/* Mobile overlay when sidebar is open */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 };
