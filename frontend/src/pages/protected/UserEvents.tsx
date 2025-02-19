@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, Clock, AlertCircle, Trash2 } from "react-feather"; // Trash icon for delete
 import { format, formatDistanceToNow, parseISO } from "date-fns"; // for date formatting
+import { baseUrl } from "../../common/constants";
 
 const MyEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,7 +23,7 @@ const MyEvents = () => {
           return;
         }
 
-        const response = await axios.get<Event[]>(`http://localhost:5000/api/events/user/${userId}`);
+        const response = await axios.get<Event[]>(`${baseUrl}/api/events/user/${userId}`);
         setEvents(response.data.reverse());
       } catch (error) {
         console.error("Error fetching user events:", error);
@@ -37,7 +38,7 @@ const MyEvents = () => {
   const handleDelete = async () => {
     if (deleteEventId) {
       try {
-        await axios.delete(`http://localhost:5000/api/events/event/${deleteEventId}`);
+        await axios.delete(`${baseUrl}/api/events/event/${deleteEventId}`);
         setEvents(events.filter(event => event._id !== deleteEventId)); // Remove the event from state
         setShowModal(false); // Close the modal after deletion
       } catch (error) {

@@ -5,6 +5,7 @@ import axios from "axios";
 import Conversation from "./Conversation";
 import Message from "./Message";
 import io from "socket.io-client";
+import { baseUrl } from "../common/constants";
 
 interface Message {
   sender: string,
@@ -25,7 +26,7 @@ const ChatComponent: React.FC = () => {
   const { userId } = useAuth();
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io(`${baseUrl}`);
     socket.current.on("connect", () => {
       console.log("Socket connected:", socket.current.id);
       if (userId) {
@@ -65,7 +66,7 @@ const ChatComponent: React.FC = () => {
   useEffect(() => {
     const getConversations = async() => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/conversation/${userId}`);
+        const res = await axios.get(`${baseUrl}/api/conversation/${userId}`);
         setConversations(res.data);
       } catch(err) {
         console.log(err);
@@ -79,7 +80,7 @@ const ChatComponent: React.FC = () => {
     const getMessages = async() => {
       try{
         if(currentChat) {
-          const res = await axios.get(`http://localhost:5000/api/message/${currentChat._id}`);
+          const res = await axios.get(`${baseUrl}/api/message/${currentChat._id}`);
           setMessages(res.data);
         }
       } catch(err) {
@@ -116,7 +117,7 @@ const ChatComponent: React.FC = () => {
     }
 
     try {
-        const res = await axios.post("http://localhost:5000/api/message/", message);
+        const res = await axios.post(`${baseUrl}/api/message/`, message);
         setMessages((prevMessages) => [...prevMessages, res.data]);
         setNewMessage("");
     } catch(err) {

@@ -4,7 +4,7 @@ import { Users, Truck, Heart, ArrowRightCircle } from "react-feather";
 import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
-  const { token } = useAuth(); // Get the token from the context
+  const { token } = useAuth();
 
   if (token) {
     return <Navigate to="/dashboard" />;

@@ -16,7 +16,7 @@ const Conversation = ({conversation} : any) => {
     return (
         <div className={`cursor-pointer border`}>
             <div className="hover:border-l-4 pl-2 py-4 hover:border-orange-600">
-                ola
+                User
                 {user}
             </div>
         </div>

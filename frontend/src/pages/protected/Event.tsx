@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar";
 import { Calendar, MapPin, Clock, Home } from "react-feather"; 
 import { format, parseISO } from "date-fns";
 import { useAuth } from "../../context/AuthContext";
+import { baseUrl } from "../../common/constants";
 
 const Event = () => {
   const { eventId } = useParams<{ eventId: string }>(); 
@@ -18,7 +19,7 @@ const Event = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/events/event/${eventId}`);
+        const response = await axios.get(`${baseUrl}/api/events/event/${eventId}`);
         setEvent(response.data);
         setLoading(false);
       } catch (err) {
@@ -31,7 +32,7 @@ const Event = () => {
 
   const handleContact = async() => {
     try {
-      const response = await axios.post("http://localhost:5000/api/conversation", {
+      const response = await axios.post(`${baseUrl}/api/conversation`, {
         senderId: userId,
         receiverId: event.userId,  // Assuming event.ownerId holds the event creator's ID
       });

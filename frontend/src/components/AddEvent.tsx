@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { baseUrl } from "../common/constants";
 
 const AddEvent: React.FC = () => {
   const { userId } = useAuth();
@@ -25,7 +26,7 @@ const AddEvent: React.FC = () => {
   useEffect(() => {
     const fetchUserEvents = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/events/user/${userId}`);
+        const response = await axios.get(`${baseUrl}/api/events/user/${userId}`);
         if (response.data.length > 0) {
           setHasEvent(true);
         }
@@ -61,7 +62,7 @@ const AddEvent: React.FC = () => {
         return;
       }
       try {
-        await axios.put(`http://localhost:5000/api/users/update-name/${userId}`, {
+        await axios.put(`${baseUrl}/api/users/update-name/${userId}`, {
           name: userName,
         });
       } catch(err) {
@@ -73,7 +74,7 @@ const AddEvent: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/events/create",
+        `${baseUrl}/api/events/create`,
         eventDetails
       );
 

@@ -3,6 +3,7 @@ import { Eye, EyeOff } from "react-feather";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext"; // Import the custom hook
+import { baseUrl } from "../common/constants";
 
 const Login = () => {
   const { setToken } = useAuth(); // Get the setToken function from the context
@@ -18,7 +19,7 @@ const Login = () => {
     setIsLoading(true); // Start loader
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post(`${baseUrl}/api/auth/login`, {
         email,
         password,
       });

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Event } from "../../interface/Event";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
 import { Calendar, MapPin, Clock, AlertCircle, Home, Filter, X } from "react-feather";
+import { baseUrl } from "../../common/constants";
 
 const AllEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,7 +23,7 @@ const AllEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/events");
+        const response = await axios.get(`${baseUrl}/api/events`);
         const reversedEvents = response.data.reverse();
         setEvents(reversedEvents);
         setFilteredEvents(reversedEvents);

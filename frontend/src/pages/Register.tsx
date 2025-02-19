@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "react-feather";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { baseUrl } from "../common/constants";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ const Register = () => {
     setError(null); // Clear previous errors
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await axios.post(`${baseUrl}/api/auth/register`, {
         email,
         password,
       });
